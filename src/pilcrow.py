@@ -9,18 +9,21 @@
 # formatting language and markup system that gives authors maximum control over
 # their document design. Write once, display everywhere.
 
-import sys
+import sys, argparse
 
 PILCROW = "¶"
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        pass
+    parser = argparse.ArgumentParser()
 
-    else:
+    parser.add_argument("input")
+
+    args = parser.parse_args(sys.argv[1:])
+
+    if args.input:
         manuscript = None
 
-        with open(sys.argv[1], "r") as in_file:
+        with open(args.input, "r") as in_file:
             manuscript = in_file.read()
 
         print(manuscript)
