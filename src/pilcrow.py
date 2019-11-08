@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("input")
-    parser.add_argument("output", nargs="?")
+    parser.add_argument("-o", "--output", dest="output", nargs="?")
 
     args = parser.parse_args(sys.argv[1:])
 
