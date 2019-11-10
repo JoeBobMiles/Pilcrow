@@ -9,9 +9,41 @@
 # formatting language and markup system that gives authors maximum control over
 # their document design. Write once, display everywhere.
 
+# Python standard lib imports
 import sys, argparse, os
 
+# Pilcrow lib imports
+from tokenizer import Tokenizer
+
+
 PILCROW = "¶"
+
+
+class Pilcrow():
+    """ A Pilcrow application instance. """
+
+    __handlers = {}
+
+    def __init__(self):
+        """ Initializes a new Pilcrow object. """
+        pass
+
+    def register(self, handler):
+        """ Registers a new handler function with this Pilcrow object. """
+        self.__handlers[handler.__name__] = handler
+
+    def handle(self, file_contents, output_format):
+        """ Takes the given file contents and invokes the handler appropriate
+        for the target output format. """
+        return self.__handlers[output_format](file_contents)
+
+
+pilcrow = Pilcrow()
+
+@pilcrow.register
+def txt(file_contents):
+    return file_contents
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -28,6 +60,18 @@ if __name__ == "__main__":
         manuscript = in_file.read()
 
 
+    def tokenize(string):
+        tokenizer = Tokenizer(string)
+
+        token = tokenizer.next_token()
+
+        while token is not None:
+            token = tokenizer.next_token()
+
+
+    tokenize(manuscript)
+
+
     out_filepath = None
 
     # If the user didn't specify an output file, we'll just infer the output
@@ -41,5 +85,8 @@ if __name__ == "__main__":
         # but for now we'll just stick with outputting .txt files.
         out_filepath = os.path.splitext(f)[0] + ".txt"
 
+
+    output_format = os.path.splitext(out_filepath)[1][1:]
+
     with open(out_filepath, "w") as out_file:
-        out_file.write(manuscript)
+        out_file.write(pilcrow.handle(manuscript, output_format))
